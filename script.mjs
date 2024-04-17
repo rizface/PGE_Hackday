@@ -109,12 +109,12 @@ async function fetchData(date = null, city = null) {
         url: url,
     })  
 
-    // since the api never added a location, we will only process the data if the locations array is empty
-    if (locations.length == 0 )  {
-        extractLocations(resp.data)
-    }
-
     if (resp.data) {
+        // since the api never added a location, we will only process the data if the locations array is empty
+        if (locations.length == 0 )  {
+            extractLocations(resp.data)
+        }
+    
         forecast = [];
 
         extractForecast(resp.data, city)
