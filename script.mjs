@@ -49,10 +49,6 @@ function extractForecast(data, location = null) {
     disasterAlert = checkAlert
 }
 
-function process(data) {
-    extractLocations(data)
-}
-
 function generateTr() {
     const tr = document.createElement("tr")
 
@@ -94,7 +90,7 @@ async function fetchData(date = null, city = null) {
 
     // since the api never added a location, we will only process the data if the locations array is empty
     if (locations.length == 0 )  {
-        process(resp.data)
+        extractLocations(resp.data)
     }
 
     if (resp.data) {
