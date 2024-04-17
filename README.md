@@ -39,7 +39,7 @@ axios.request(config)
 
 ## Hackathon Rules
 ![Gambar Cuaca](/assets/image.png)
-- Participants use any langue programing.
+- Participants are free to use the programming language they are proficient in..
 - Create visualizations based on the weather forecast data.
 - Submit your final code via a pull request to the main branch.
 
