@@ -124,7 +124,9 @@ async function fetchData(date = null, city = null) {
         return
     }
 
-    alert("No data found")
+    const now = new Date()
+    now.setDate(now.getDate()-1)
+    await fetchData(`${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`, "all")
 }
 
 
