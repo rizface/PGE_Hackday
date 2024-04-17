@@ -22,10 +22,7 @@ const axios = require('axios');
 let config = {
   method: 'get',
   maxBodyLength: Infinity,
-  url: 'https://publik.bmkg.go.id/pge/forecast24h',
-  headers: { 
-    'access_token': ''
-  }
+  url: 'https://hsse.mypge.id/cuaca/api',
 };
 
 axios.request(config)
