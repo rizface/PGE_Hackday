@@ -41,7 +41,7 @@ axios.request(config)
 ![Gambar Cuaca](/assets/image.png)
 - Participants are free to use the programming language they are proficient in..
 - Create visualizations based on the weather forecast data.
-- Submit your final code via a pull request to the main branch.
+- Submit your final code new branch | yourname_dev.
 
 
 ## Judging Criteria
