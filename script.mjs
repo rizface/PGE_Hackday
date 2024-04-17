@@ -1,12 +1,19 @@
 let locations = []
 let forecast = []
 let minDate = null
-let disasterAlert = false;
+let disasterAlert = {
+    edited: false
+};
+let locationBasedDisaster = {
+    edited: false
+}
+
 
 const dateContainer = document.getElementById("minDate")
 const tbody = document.querySelector('tbody')
 const citySelect = document.getElementById("citySelect")
 const alertContainer = document.getElementById("alertContainer")
+const publicDate = document.getElementById("publicDate")
 
 function extractLocations(data) {
     locations = data.map(d => {
@@ -25,18 +32,34 @@ function extractLocations(data) {
 function extractForecast(data, location = null) {
     // check alert for the first time for each date
     let locationBased = [];
-    let checkAlert = false
+
     data.forEach(d => {
         d.forecast.forEach(f => {
-            if (!checkAlert) {
-                checkAlert = (f.alert_daily == true) || (f.alert_all == true) 
-            }
-
             f.location = d.location_name.split("_").join(" ")
 
             if (location && location == d.location_name && location != "all") {
+                if (f.alert_daily) {
+                    locationBasedDisaster.area = f.location
+                    locationBasedDisaster.kec = d.kecamatan
+                    locationBasedDisaster.kab = d.kabupaten
+                    locationBasedDisaster.prov =  d.provinsi
+                    locationBasedDisaster.msg = f.alert_daily
+                    locationBasedDisaster.edited = true
+                    locationBasedDisaster.date = f.time_utc
+                }
+                
                 locationBased.push(f)
             } else {
+                if (f.alert_daily && !locationBasedDisaster.edited && location == "all") {
+                    disasterAlert.area = f.location
+                    disasterAlert.kec = d.kecamatan
+                    disasterAlert.kab = d.kabupaten
+                    disasterAlert.prov =  d.provinsi
+                    disasterAlert.msg = f.alert_daily
+                    disasterAlert.edited = true
+                    disasterAlert.date = f.time_utc
+                }
+
                 forecast.push(f)
             }
         })
@@ -45,8 +68,6 @@ function extractForecast(data, location = null) {
     if (locationBased.length > 0) {
         forecast = locationBased
     }
-
-    disasterAlert = checkAlert
 }
 
 function generateTr() {
@@ -114,7 +135,7 @@ function generateCity() {
     })
 }
 
-function generateAlert() {
+function generateAlert(disasterAlert) {
     const div = document.createElement("div")
     div.classList.add("card")
     div.classList.add("mt-4")
@@ -128,7 +149,12 @@ function generateAlert() {
     h5.className = "card-title"
     h5.textContent = "⚠️ Peringatan Dini Cuaca Ekstrem"
 
+    const p = document.createElement("p")
+    p.classList.add("card-text")
+    p.textContent = `${disasterAlert.msg} di ${disasterAlert.area} ${disasterAlert.prov}, ${disasterAlert.kab}, ${disasterAlert.kec} pada ${disasterAlert.date}`
+    
     div2.appendChild(h5)
+    div2.appendChild(p)
     div.appendChild(div2)
 
     return div
@@ -153,10 +179,18 @@ function generateUI() {
     })
 
     dateContainer.textContent = minDate
+    publicDate.textContent = `Tanggal Publikasi: ${minDate}`
 
-    if (disasterAlert) {
-        alertContainer.appendChild(generateAlert())
+    alertContainer.innerHTML = ""
+
+    if (locationBasedDisaster.edited) {
+        alertContainer.appendChild(generateAlert(locationBasedDisaster))
+    } else if (disasterAlert.edited) {
+        alertContainer.appendChild(generateAlert(disasterAlert))
     }
+    
+    disasterAlert.edited = false
+    locationBasedDisaster.edited = false
 }
 
 async function move(next) {
@@ -178,8 +212,17 @@ async function move(next) {
 
 async function select(e) {
     tbody.innerHTML = ""
+    alertContainer.innerHTML = ""
 
     await fetchData(minDate, e.value.split(" ").join("_"))
+
+    generateUI()
+}
+
+async function resetDate() {
+    await fetchData(null, citySelect.value.split(" ").join("_"))
+
+    tbody.innerHTML = ""
 
     generateUI()
 }

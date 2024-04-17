@@ -14,7 +14,7 @@
             </div>
             <div class="col-md-10">
                 <div class="mb-3">
-                    <label for="citySelect" class="form-label">Select City:</label>
+                    <label for="citySelect" class="form-label">Pilih Kota:</label>
                     <select onchange="select(this)" class="form-select" id="citySelect">
                         <option value="all">All</option>
                     </select>
@@ -24,6 +24,10 @@
                         <span id="minDate">
                         </span>
                     <button onclick="move(true)" class="btn btn-sm btn-primary" id="nextDateBtn">Next Date &rarr;</button>
+                    <button onclick="resetDate()" class="btn btn-sm btn-primary" id="nextDateBtn">Prakiraan Cuaca 7 Hari Kedepan</button>
+
+                    <small class="text-muted" id="publicDate"></small>
+                    <small class="text-muted">Sumber Data: BMKG</small>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="table">
