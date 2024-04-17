@@ -6,6 +6,7 @@ let disasterAlert = false;
 const dateContainer = document.getElementById("minDate")
 const tbody = document.querySelector('tbody')
 const citySelect = document.getElementById("citySelect")
+const alertContainer = document.getElementById("alertContainer")
 
 function extractLocations(data) {
     locations = data.map(d => {
@@ -20,7 +21,6 @@ function extractLocations(data) {
     })
 
 }
-
 
 function extractForecast(data, location = null) {
     // check alert for the first time for each date
@@ -118,6 +118,26 @@ function generateCity() {
     })
 }
 
+function generateAlert() {
+    const div = document.createElement("div")
+    div.classList.add("card")
+    div.classList.add("mt-4")
+    div.classList.add("bg-primary")
+    div.classList.add("text-white")
+
+    const div2 = document.createElement("div")
+    div2.className = "card-body"
+
+    const h5 = document.createElement("h5")
+    h5.className = "card-title"
+    h5.textContent = "⚠️ Peringatan Dini Cuaca Ekstrem"
+
+    div2.appendChild(h5)
+    div.appendChild(div2)
+
+    return div
+}
+
 function generateUI() {
     forecast.forEach(f => {
         const tr = generateTr()
@@ -137,6 +157,10 @@ function generateUI() {
     })
 
     dateContainer.textContent = minDate
+
+    if (disasterAlert) {
+        alertContainer.appendChild(generateAlert())
+    }
 }
 
 async function move(next) {
@@ -158,7 +182,9 @@ async function move(next) {
 
 async function select(e) {
     tbody.innerHTML = ""
+
     await fetchData(minDate, e.value.split(" ").join("_"))
+
     generateUI()
 }
 
